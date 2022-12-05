@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="icon" href="images/favicon.ico"> -->
+    <link rel="stylesheet" href="./src/css/html5reset.css">
+    <link rel="stylesheet" href="./src/css/style.css">
+    <title>Flowers</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <li><a href="index.html">Search</a></li>
+            <li><a href="./src/pages/previous_searches.html">Previous Searches</a></li>
+            <li><a href="./src/pages/paper_corpus.html">Paper Corpus</a></li>
+            <li><a href="./src/pages/author_corpus.html">Author Corpus</a></li>
+
+        </nav>
+    </header>
+        
+    <main>
+        <div class ="search_paper">
+            <form action="#" method="POST">
+                <div class="paper_title_search">
+                    <div class="paper_title_search_label">
+                        <label for="paper_tile" class ="paper_title_search_label">Paper Title:</label>
+                    </div>
+                    <div class="paper_title_search_input">
+                        <input type="text" id="paper_tile" name="paper_tile" placeholder="e.g. Attention is all you need">
+                    </div>
+                </div>
+                <div class="author_search">
+                    <div class="author_search_label">
+                        <label for="author_name">Author Name:</label>
+                    </div>
+                    <div class="author_search_input">
+                        <input type="text" id="author_name" name="author_name" placeholder="e.g. Ashish Vaswani(seperate using commas)">
+                    </div>
+                </div>
+                <div class="abstract_key">
+                    <div class="abstract_key_label">
+                        <label for="keyword">Abstract Phrase:</label>
+                    </div>
+                    <div class="abstract_key_input">
+                        <input type="text" id="keyword" name="keyword" placeholder="e.g.Transformers" >
+                    </div>
+                </div>
+                <div class="submit_button">
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+    <footer>
+
+    </footer>
+</body>

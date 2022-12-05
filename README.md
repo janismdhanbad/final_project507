@@ -2,7 +2,7 @@
 
 TODO
 
-- [ ] Hit Arxiv API
-- [ ] Hit twitter API
-- [ ] Hit Semantic scholar API
-- [ ] Hit google scholar/ scholarly API
+- [ ] Hit Arxiv API -- No key required
+- [ ] Hit twitter API -- Outh
+- [ ] Hit Semantic scholar API -- Key based
+- [ ] Hit google scholar/ scholarly API -- No key required

@@ -1,0 +1,133 @@
+/*Add padding and margin to space out the page.
+Make the font larger too.*/
+body{
+	/* margin:1%; */
+	/* padding:1%; */
+	font-size:150%;
+	background-color:beige;
+}
+
+/*Make the h1 heading bigger with a bold font*/
+h1{
+	font-size: 2em; 
+	font-weight: bold;
+}
+
+.active{
+	background: white;
+    text-transform: uppercase;
+	text-align: center;
+}
+
+.active a{
+	text-decoration: none;;
+}
+a:link { text-decoration: none; }
+a{
+	color: black;
+}
+/*Change the styling for all of the list 
+items in the nav section*/
+header{
+	text-align: center;
+	background-color:rgb(20, 20, 11);
+	width: 100%;
+	padding-top:5%;
+	padding-bottom:1%;
+	border-bottom: 3px solid white;
+}
+nav li{
+	background-color: rgba(221, 147, 10, 0.899);
+	padding:10px;
+	width:25%;
+	border:1px solid black;
+	border-radius: 2px;
+	display: inline-block;
+	width: 20%;
+}
+nav li:hover{
+	/* box-shadow: 10px 10px 5px gray; */
+	font-size: 28px;
+}
+.search_paper{
+	margin: auto;
+	padding-top: 100px;
+	/* padding-left: 100px;
+	padding-right: 100px; */
+	
+}
+form{
+	display: grid;
+	grid-template-rows: repeat(50px, 6);
+	grid-template-columns: 1fr 1fr 1fr;
+	/* justify-items: center; */
+	column-gap: 30px;
+	row-gap: 10px;
+}
+
+
+
+
+.paper_title_search{
+	grid-row: 1/ span 1;
+	grid-column: 1 / span 1;
+	/* background-color: aqua; */
+}
+.author_search{
+	grid-row: 1/ span 1;
+	grid-column: 2 / span 1;
+	/* background-color: yellow; */
+}
+
+.abstract_key{
+	grid-row: 1/ span 1;
+	grid-column: 3 / span 1;
+	/* background-color: aquamarine; */
+}
+.abstract_key_input{
+	grid-row: 3/ span 1;
+	grid-column: 3 / span 1;
+}
+.paper_title_search_label{
+	text-align: center;
+	padding-bottom: 5px;
+}
+.author_search_label{
+	text-align: center;
+	padding-bottom: 5px;
+}
+.abstract_key_label{
+	text-align: center;
+	padding-bottom: 5px;
+}
+input[type="text"]
+{
+    width:100%;
+	height: 30px;
+	border-radius: 20px;
+}
+.submit_button{
+	grid-row: 4/ span 1;
+	grid-column: 1 / -1;
+	text-align: center;
+}
+.submit_button input{
+	justify-items: center;
+	background-color:coral;
+	border: 1px solid black;
+	height: 40px;
+	width: 85px;
+	border-radius: 20px;
+	font-size: 18px;
+}
+.submit_button input:hover{
+	box-shadow: 5px 5px 5px gray;
+	width: 90px;
+	height: 45px;
+	font-size: 20px;
+}
+
+/*Added this so the links stay the same color*/
+
+a:visited{color:whitesmoke}
+
