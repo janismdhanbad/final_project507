@@ -12,7 +12,42 @@ h1{
 	font-size: 2em; 
 	font-weight: bold;
 }
+.paper_display{
+	padding: 10px;
+	margin: 20px;
+	height: 130px;
+	width: auto;
+	border: 1px solid black;
+	border-radius: 20px;
+	background-color: whitesmoke;
+}
+.paper_display p{
+	font-size: 24pt;
+}
+.author_list li{
+	margin-top: 10px;
+	display: inline-block;
+	font-style: italic;
+}
+.paper_display input[type=text]{
+	display: None;
+}
+.paper_explore input[type=submit]{
+	margin-top: 10px;
+	height: 30px;
+	font-size: 12pt;
+	width: 150px;
+	background-color: brown;
+	border: 1px solid brown;
+	border-radius: 20px;
+	color: aliceblue;
+}
+.paper_explore input[type=submit]:hover{
+	box-shadow: 10px 10px 5px gray;
+	font-size: 14pt;
+	width: 170px;
 
+}
 .active{
 	background: white;
     text-transform: uppercase;
