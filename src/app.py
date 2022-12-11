@@ -31,8 +31,9 @@ def explore_paper():
         arxiv_id_paper = k
     arxiv_id_paper = arxiv_id_paper.replace("abs/", "").split("v")[0]
     ar_id = ArxivID(arxiv_id_paper)
-    SEMSCHTREE.fetch_paper_data(ar_id)
-    return render_template("paper_explore.html", arxiv_id_paper=arxiv_id_paper)
+    title,authors,abstract,ref_cnt,cit_cnt,inf_cit = SEMSCHTREE.fetch_paper_data(ar_id)
+    return render_template("paper_explore.html", title=title,authors=authors,
+    abstract=abstract,ref_cnt=ref_cnt,cit_cnt=cit_cnt,inf_cit=inf_cit)
     
 
 if __name__ == '__main__':  

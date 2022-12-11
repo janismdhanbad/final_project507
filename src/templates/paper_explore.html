@@ -1,1 +1,53 @@
-<h1>{{arxiv_id_paper}} </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/html5reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+    <title>papers</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <li><a href="/">Search</a></li>
+            <li><a href="./src/pages/previous_searches.html">Previous Searches</a></li>
+            <li><a href="./src/pages/paper_corpus.html">Paper Corpus</a></li>
+            <li><a href="./src/pages/author_corpus.html">Author Corpus</a></li>
+
+        </nav>
+    </header>
+    <main>
+        <h1 style="text-align:center;"> {{title}}</h1>
+        <div class="abstrat_exp">
+            <h2>Abstract:</h2>
+            <p>{{abstract}}</p>
+            
+        </div>
+        <!-- {% for paper in paper_results %}
+        
+            <div class="paper_display">
+                <p>{{paper["title"]}}</p>
+                {{paper["arxiv_id"]}}
+                <div class="author_list">
+                    {% for author in paper["authors"] %}
+                        <li> {{author}} </li>  
+                    {% endfor %}
+                </div>
+                <form action="/papers/paper_explore" method="POST">
+                <div class="paper_explore">
+                    <input type="text" id="{{paper["arxiv_id"]}}"  class="paper_input"  name="{{paper["arxiv_id"]}}" value="{{paper["arxiv_id"]}}">
+                    <input type="submit"  value="Explore this paper">
+                </div>
+            </form>
+            </div>
+        {% endfor %} -->
+    
+</main>
+
+
+<footer>
+
+</footer>
+</body>

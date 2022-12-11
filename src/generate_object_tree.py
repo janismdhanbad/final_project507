@@ -31,6 +31,7 @@ class SemSchTree:
         self.cache_pth = cache_pth
         self.papers_dict = {}
         self.read_cache()
+        
     
     def read_cache(self):
         try:
@@ -43,7 +44,7 @@ class SemSchTree:
 
     def write_cache(self):
         data_save = {}
-        for paper_id, val in self.papers:
+        for paper_id, val in self.papers_dict.items():
             temp_dict = vars(val)
             data_save[paper_id] = temp_dict
 
@@ -66,7 +67,8 @@ class SemSchTree:
         else:
             semsch_paperid = input_id
         paper_list = self.get_paper_list()
-        if semsch_paperid in paper_list:
+        
+        if semsch_paperid in paper_list:    
             pass
         else:
             author_fields = "authors.name,authors.hIndex,authors.paperCount,authors.citationCount"
@@ -82,7 +84,10 @@ class SemSchTree:
     def update_paper_info(self, results, arxiv_id):
         _initialize_dict = {}
         _initialize_dict["id"] =  results["paperId"]
-        _initialize_dict["arxiv_id"] = arxiv_id
+        if isinstance(arxiv_id, ArxivID):
+            _initialize_dict["arxiv_id"] = arxiv_id.id
+        else:
+            _initialize_dict["arxiv_id"] = None
         # _initialize_dict["url"] = results['url']
         _initialize_dict["title"] = results['title']
         _initialize_dict["authors"] = results['authors']
@@ -122,7 +127,10 @@ class SemSchTree:
         citations = paper.citations
         self.update_papers(references)
         self.update_papers(citations)
-        import pdb; pdb.set_trace()
+        
+        self.write_cache()
+        return (paper.title, paper.authors, paper.abstract, 
+        paper.reference_count,paper.citation_count, paper.influential_paper_citations)
         
         
 

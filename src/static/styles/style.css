@@ -48,6 +48,19 @@ h1{
 	width: 170px;
 
 }
+.abstrat_exp{
+	height:auto;
+	width: auto;
+	background-color: antiquewhite;
+	font-family: 'Times New Roman', Times, serif;
+}
+.abstrat_exp h2{
+	font-weight: bold;
+}
+.abstrat_exp p{
+	margin-top: 10px;
+
+}
 .active{
 	background: white;
     text-transform: uppercase;
