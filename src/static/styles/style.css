@@ -1,5 +1,8 @@
 /*Add padding and margin to space out the page.
 Make the font larger too.*/
+header h1{
+	margin-bottom: 20px;
+}
 body{
 	/* margin:1%; */
 	/* padding:1%; */
@@ -47,8 +50,46 @@ h1{
 	width: 170px;
 
 }
+table{
+	margin: 20px;
+	border: 1px solid black;
+	margin: 20px auto;
+	width: 70%;
+}
 
+th, td {
+	border: 1px solid beige;
+	background-color: rgba(228, 190, 161, 0.993);
+	padding: 10px;
+	text-align: center;
+  }
+td:hover{
+	background-color: rgba(237, 155, 92, 0.993);
+}
+.prev_paper_explore input[type=text]{
+	display: none;
+}
+.prev_paper_explore{
+	margin: 0 auto;
+}
+.prev_paper_explore form{
+	display: inline;
+}
+.prev_paper_explore input[type=submit]{
+	margin-top: 10px;
+	height: 30px;
+	font-size: 12pt;
+	/* width: 150px; */
+	background-color: brown;
+	border: 1px solid brown;
+	border-radius: 20px;
+	color: aliceblue;
+	
+}
+.prev_paper_explore input[type=submit]:hover{
+	box-shadow: 10px 10px 5px gray;
 
+}
 
 .paper_metrics{
 	margin-top: 20px;
@@ -332,9 +373,7 @@ input[type="text"]
 	color: aliceblue;
 
 }
-.paper_link h1{
-	
-}
+
 
 /*Added this so the links stay the same color*/
 

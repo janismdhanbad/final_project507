@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/html5reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+    <title>paper explorer</title>
+</head>
+
+<body>
+    <header>
+        <h1 style="color: white;"> Paper Explorer </h1>
+        <nav>
+            <li><a href="/">Search</a></li>
+            <li><a href="/prev_searches">Previous Searches</a></li>
+            <li><a href="/paper_corpus">Paper Corpus</a></li>
+            <li><a href="/author_corpus">Author Corpus</a></li>
+
+        </nav>
+    </header>
+    <main>
+        <table>
+            <tr>
+              <th>Author Name</th>
+              <th>Paper Count</th>
+              <th>Citation Count</th>
+              <th>HIndex</th>
+              <th>Explore Link</th>
+            </tr>
+          
+        {% for record in author_records %}
+            <tr>
+                <td>{{record["name"]}}</td>
+                <td>{{record["paper_count"]}}</td>
+                <td>{{record["citations"]}}</td>
+                <td>{{record["hindex"]}}</td>
+                <td>
+                    <div class="prev_paper_explore">
+                        <form action="/papers/author_explore" method="POST">
+                            
+                                <input type="text" id="{{record["id"]}}"  class="paper_input"  name="author_id" value="{{record["id"]}}">
+                                <input type="submit"  value="go to this author">
+                            
+                        </form>
+                    </div>
+                </td>
+
+            </tr>
+            
+        {% endfor %}
+    </table>
+    </main>
+
+
+    <footer>
+    
+    </footer>
+    </body>
+    
