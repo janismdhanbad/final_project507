@@ -15,8 +15,6 @@ h1{
 .paper_display{
 	padding: 10px;
 	margin: 20px;
-	height: 130px;
-	width: auto;
 	border: 1px solid black;
 	border-radius: 20px;
 	background-color: whitesmoke;
@@ -28,6 +26,7 @@ h1{
 	margin-top: 10px;
 	display: inline-block;
 	font-style: italic;
+	margin-right: 13px;
 }
 .paper_display input[type=text]{
 	display: None;
@@ -48,11 +47,140 @@ h1{
 	width: 170px;
 
 }
+
+
+
+.paper_metrics{
+	margin-top: 20px;
+	display: flex;
+	justify-content: space-around;
+}
+.metric{
+	width: 20%;
+	background-color: bisque;
+	border: 2px solid black;
+	border-radius: 10px;
+
+	text-align: center;
+}
+.metric .metric_value{
+	display: block;
+	font-size: 250%;
+	
+}
+.metric .metric_heading{
+	display: block;
+	font-size: 150%;
+	
+}
+.authors_tab{
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	margin-top: 30px;
+	gap: 10px;
+}
+.each_author{
+	width: 200px;
+	height: auto;
+	background-color: bisque;
+	border: 2px solid black;
+	text-align: center;
+	border-radius: 10px;
+	
+
+}
+.each_author p{
+	display: block;
+	margin-top: 10px;
+	
+}
+.each_author input[type=text]{
+	display: None;
+}
+.author_explore input[type=submit]{
+	margin-top: 10px;
+	height: 30px;
+	font-size: 12pt;
+	width: 150px;
+	background-color: brown;
+	border: 1px solid brown;
+	border-radius: 20px;
+	color: aliceblue;
+	margin-left: 20px;
+	margin-bottom: 10px;
+
+}
+.author_explore input[type=submit]:hover{
+	box-shadow: 10px 10px 5px gray;
+	font-size: 14pt;
+	width: 170px;
+
+}
+
+
+.ex_authors_tab{
+	display: flex;
+	justify-content: space-around;
+	flex-direction: column;
+	flex-wrap: wrap;
+	margin-top: 30px;
+	gap: 10px;
+}
+.ex_each_author{
+	width: 60%;
+	height: auto;
+	background-color: bisque;
+	border: 2px solid black;
+	text-align: left;
+	border-radius: 10px;
+	margin-left: 30px;
+	padding: 10px;
+	
+
+}
+.ex_each_author p{
+	display: inline;
+	margin-right: 20px;
+	
+}
+.ex_each_author input[type=text]{
+	display: None;
+}
+.ex_each_author form{
+	display: inline-block;
+}
+.ex_author_explore{
+	margin-right: 10px;
+	margin-left: auto;
+
+}
+.ex_author_explore input[type=submit]{
+	margin-top: 10px;
+	height: 30px;
+	font-size: 12pt;
+	width: 150px;
+	background-color: brown;
+	border: 1px solid brown;
+	border-radius: 20px;
+	color: aliceblue;
+	display: inline-block;
+
+
+}
+.ex_author_explore input[type=submit]:hover{
+	box-shadow: 10px 10px 5px gray;
+	font-size: 14pt;
+	width: 170px;
+
+}
+
 .abstrat_exp{
 	height:auto;
 	width: auto;
 	background-color: antiquewhite;
 	font-family: 'Times New Roman', Times, serif;
+	margin: 20px;
 }
 .abstrat_exp h2{
 	font-weight: bold;
@@ -173,6 +301,39 @@ input[type="text"]
 	width: 90px;
 	height: 45px;
 	font-size: 20px;
+}
+.use_cache{
+	grid-row: 5/ span 1;
+	grid-column: 1 / -1;
+	text-align: center;
+
+}
+.paper_link{
+	
+	margin: auto;
+	background-color: brown;
+	border: 1px black solid;
+    width: 210px;
+	color: aliceblue;
+	border-radius: 5px;
+	padding: 5px;
+	font-size: .8em;
+	margin-top: 20px;
+	
+}
+.paper_link:hover{
+	width: 240px;
+	font-size: 1.5rem;
+	box-shadow: 10px 10px 5px gray;
+	
+}
+.paper_link a{
+	text-decoration: underline;
+	color: aliceblue;
+
+}
+.paper_link h1{
+	
 }
 
 /*Added this so the links stay the same color*/

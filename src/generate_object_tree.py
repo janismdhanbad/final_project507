@@ -13,6 +13,7 @@ import json
 import re
 from data.twitter_key import SemanticScholarCreds
 import time
+import urllib.parse
 import langid
 
 SEMSCH_PAPER_KEYS = [
@@ -77,18 +78,17 @@ class SemSchTree:
             url_paper = f"{SEMSCH_LINK}/paper/{semsch_paperid}?fields={req_fields}"
             _results = requests.get(url_paper, headers={"x-api-key":SemanticScholarCreds.API_KEY })
             results = _results.json()
-            self.update_paper_info(results, input_id)
+            self.update_paper_info(results, input_id, semsch_paperid)
         return semsch_paperid
 
 
-    def update_paper_info(self, results, arxiv_id):
+    def update_paper_info(self, results, arxiv_id, semsch_paperid):
         _initialize_dict = {}
-        _initialize_dict["id"] =  results["paperId"]
+        _initialize_dict["id"] = results["paperId"]
         if isinstance(arxiv_id, ArxivID):
             _initialize_dict["arxiv_id"] = arxiv_id.id
         else:
             _initialize_dict["arxiv_id"] = None
-        # _initialize_dict["url"] = results['url']
         _initialize_dict["title"] = results['title']
         _initialize_dict["authors"] = results['authors']
         _initialize_dict["abstract"] = results['abstract']
@@ -98,6 +98,7 @@ class SemSchTree:
         _initialize_dict["citation_count"] = results['citationCount']
         _initialize_dict["influential_paper_citations"] = results['influentialCitationCount']
         _initialize_dict["is_open_access"] = results['isOpenAccess']
+        _initialize_dict["url"] = results['url']
         
         citations = [f for f in results["citations"] if f["paperId"] is not None]
         citations = [f for f in citations if f["influentialCitationCount"] is not None]
@@ -111,58 +112,45 @@ class SemSchTree:
         _initialize_dict["references"] = references
         paper = SemSchPaper(**_initialize_dict)
         self.papers_dict[results["paperId"]] = paper
-
+        if semsch_paperid != results["paperId"]:
+            self.papers_dict[semsch_paperid] = paper
 
 
     def update_papers(self, paper_ids):
-        for i, ref_id in enumerate(paper_ids):
-            self.update_paper_data(ref_id)
-            if ((i%98 == 0) and (i != 0)) :
-                time.sleep(1.)
+        i = 1
+        for ref_id in paper_ids:
+            if self.papers_dict.get(ref_id):
+                pass
+            else:
+                self.update_paper_data(ref_id)
+                i = i+1
+                if i%98 == 0:
+                    time.sleep(1.)
     
     def fetch_paper_data(self, input_id):
         semsch_paperid = self.update_paper_data(input_id)
         paper = self.papers_dict[semsch_paperid]
         references = paper.references
         citations = paper.citations
+        references = [f for f in references if f is not None]
+        citations = [f for f in citations if f is not None]
         self.update_papers(references)
         self.update_papers(citations)
-        
+        reference_list = []
+        citation_list = []
         self.write_cache()
+
+        for ref in references:
+            reference_list.append(vars(self.papers_dict[ref]))
+
+        for cit in citations:
+            citation_list.append(vars(self.papers_dict[cit]))
+        
+        
         return (paper.title, paper.authors, paper.abstract, 
-        paper.reference_count,paper.citation_count, paper.influential_paper_citations)
-        
-        
-
-
-
-
-
-        
-        
-
-
-
+        paper.reference_count,paper.citation_count, paper.influential_paper_citations,
+        paper.url, reference_list, citation_list)
     
-
-
-    def _initialize_paper(self, paper_dict:Dict):
-
-        def __init__(self):
-            self.lst = []
-        _paper_dict = {}
-        for k in SEMSCH_PAPER_KEYS:
-            _paper_dict[k] = paper_dict.get(k)
-        paper = SemSchPaper(**_paper_dict)
-        return paper
-
-    def initialize_papers(self, paper_list:List[Dict]):
-        for paper_dict in paper_list:
-            paper = self._initialize_paper(paper_dict=paper_dict)
-            self.lst.append(paper)
-
-
-
 
 class ArxivTree:
 
@@ -192,6 +180,13 @@ class ArxivTree:
 
     def get_paper_titles(self):
         return [[i, f.title] for i, f in enumerate(self.papers)]
+    def get_paper_authors(self):
+        authors_all = [[i, f.authors] for i, f in enumerate(self.papers)]
+        return authors_all
+    
+    def get_paper_abstracts(self):
+        abstract_all = [[i, f.abstract] for i, f in enumerate(self.papers)]
+        return abstract_all
 
     def update_paper_list(self, paper_dict):
         self.papers.append(ArxivPaper(**paper_dict))
@@ -206,9 +201,12 @@ class ArxivTree:
         query_list = []
         for k, v in param_dict.items():
             if v is not None:
-                value_str = "\ ".join(v.split(" "))
+                value_str = " ".join(v.split(" "))
+                value_str = f"%22{value_str}%22"
                 query_list.append(f"{k}:{value_str}")
         str_query = "+AND+".join(query_list)
+        str_query = urllib.parse.quote_plus(str_query)
+
         str_query += f"&sortBy=relevance&sortOrder=descending&start={start_idx}&max_results={max_results}"
         return ARXIV_LINK + str_query
 
@@ -220,19 +218,30 @@ class ArxivTree:
         tree = ET.ElementTree(ET.fromstring(xmlstring))
         tree_root = tree.getroot()
         all_papers = tree_root.findall('n:entry',namespaces=NAMESPACE)
+
         for paper in all_papers:
             temp_tile = paper.find('n:title',namespaces=NAMESPACE).text
+            
             all_authors = list(paper.findall('n:author',namespaces=NAMESPACE))
+            
             paper_id = paper.find('n:id',namespaces=NAMESPACE).text.replace("http://arxiv.org/","")
+            paper_abstract = paper.find('n:summary',namespaces=NAMESPACE).text.replace("http://arxiv.org/","")
+            paper_abstract = paper_abstract.replace("\n", " ").lstrip().rstrip()
+            # import pdb; pdb.set_trace()
             paper_author_list = []
             for au in all_authors:
                 paper_author_list.append(list(au)[0].text)
-            paper_details = {"arxiv_id":paper_id, "authors": paper_author_list, "title": temp_tile}
-            self.local_paper_list.append(paper_id)
+            paper_details = {
+                "arxiv_id":paper_id, 
+                "authors": paper_author_list, 
+                "title": temp_tile,
+                "abstract": paper_abstract}
+            
+            self.local_paper_list.append(ArxivPaper(**paper_details))
             self.update_paper_list(paper_details)
         
 
-    def gather_data(self, paper_title=None, author=None, abstract=None):
+    def gather_data(self, paper_title=None, author=None, abstract=None, use_cache=False):
         if paper_title == "":
             paper_title = None
         if author == "":
@@ -241,17 +250,168 @@ class ArxivTree:
             abstract = None
         
         paper_list = self.get_paper_titles()
-        paper_ids = [f[0] for f in paper_list if utils.lev_dist(f[1], paper_title)< 30]
-        if bool(paper_ids):
+        author_list = self.get_paper_authors()
+        abstract_list = self.get_paper_abstracts()
+
+
+        if paper_title is not None:
+            paper_ids_title = [f[0] for f in paper_list if utils.lev_dist(f[1], paper_title)< 30]
+        else:
+            paper_ids_title = []
+        if author is not None:
+            paper_ids_author = [f[0] for f in author_list if utils.arxiv_author_match(author, f[1])]
+        else:
+            paper_ids_author = []
+        if abstract is not None:
+            paper_ids_abstract = [f[0] for f in abstract_list if utils.arxiv_abstract_match(f[1], abstract)]
+
+        paper_ids = paper_ids_title + paper_ids_author + paper_ids_abstract
+
+        if (bool(paper_ids) and use_cache == True):
             candidate_papers = [vars(f) for f in self.papers]
-            
             papers_data = np.array(candidate_papers)[paper_ids].tolist()
         else:
             self.request_arxiv_api_and_update(paper_title, author, abstract)
             self.write_cache()
-            papers_data = [vars(f) for f in self.papers]
+            papers_data = [vars(f) for f in self.local_paper_list]
+            
 
         return papers_data
 
+class AuthorTree:
+    def __init__(self, cache_pth: str):
+        self.cache_pth = cache_pth
+        self.author_dict = {}
+        self.read_cache()
+
+    def read_cache(self):
+        try:
+            with open(self.cache_pth, 'r') as f: data = json.load(f)
+            if bool(data):
+                for k,v in data.items():
+                    self.author_dict[k] = Authors(**v)
+        except:
+            pass
+
+    def write_cache(self):
+        data_save = {}
+        for author_id, val in self.author_dict.items():
+            temp_dict = vars(val)
+            data_save[author_id] = temp_dict
+
+        with open(self.cache_pth, 'w') as f:
+            json.dump(data_save, f)
+        return True
+    
+    def get_author_list(self):
+        return list(self.author_dict.keys())    
+
+    def request_and_update(self, author_id: str):
+
+        author_list = self.get_author_list()
+        if author_id in author_list:
+            
+            pass
+        else:
+            papers_req = "papers.title,papers.authors"
+            req_fields = f"name,affiliations,homepage,paperCount,citationCount,hIndex,{papers_req}"
+            author_url = f"{SEMSCH_LINK}/author/{author_id}?fields={req_fields}"
+            _results = requests.get(author_url, headers={"x-api-key":SemanticScholarCreds.API_KEY })
+            results = _results.json()
+            try:
+                self.update_author_info(results)
+            except:
+                import pdb; pdb.set_trace()
+
+        return author_id
+    
+    def update_author_info(self, results:Dict):
+        _author_dict = {}
         
+        author_id = results["authorId"]
+        
+        _author_dict["id"] = author_id
+        _author_dict["name"] = results["name"]
+        _author_dict["homepage"] = results["homepage"]
+        _author_dict["paper_count"] = results["paperCount"]
+        _author_dict["citations"] = results["citationCount"]
+        _author_dict["hindex"] = results["hIndex"]
+        
+        author_papers = results["papers"]
+        author_papers_id = [f["paperId"] for f in author_papers]
+        _author_dict["papers"] = author_papers_id
+
+        id_worked_with = [[f["authorId"] for f in f["authors"]] for f in author_papers]
+        id_worked_with = [f for ff in id_worked_with for f in ff]
+
+        id_worked_with = list(set(id_worked_with))
+        id_worked_with = [f for f in id_worked_with if f != author_id]
+        _author_dict["worked_with"] = id_worked_with
+        author = Authors(**_author_dict)
+        self.author_dict[author_id] = author
+
+    def get_author_data(self,SEMSCHTREE, author_id: str):
+        sem_sch_id = self.request_and_update(author_id)
+        author = self.author_dict[sem_sch_id]
+
+        author_papers_id = author.papers
+        author_papers_id = [f for f in author_papers_id if f is not None]
+
+        id_worked = author.worked_with
+        id_worked = [f for f in id_worked if f is not None]
+
+        i = 1
+        for a_id in id_worked:
+            if self.author_dict.get(a_id):
+                pass
+            else:
+                self.request_and_update(a_id)
+                i = i+1
+                if i%98 ==0:
+                    time.sleep(1)
+        i = 1
+        for p_id in author_papers_id:
+            if SEMSCHTREE.papers_dict.get(p_id):
+                pass
+            else:
+                SEMSCHTREE.update_paper_data(p_id)
+                i = i+1
+                if i%98 ==0:
+                    time.sleep(1)
+        
+        worked_with_id = [f for f in author.worked_with]
+        worked_with_authors = [self.author_dict.get(f) for f in worked_with_id]
+        worked_with_authors = [f for f in worked_with_authors if f is not None]
+        worked_with_authors = [f for f in worked_with_authors if f.citations is not None]
+        worked_with_authors = sorted(worked_with_authors, key= lambda x: x.citations, reverse=True)
+        worked_with_authors = worked_with_authors[:50]
+        worked_with_authors = [vars(f) for f in worked_with_authors]
+
+        papers_author = [SEMSCHTREE.papers_dict.get(f) for f in author_papers_id]
+        papers_author = [f for f in papers_author if f is not None]
+        papers_author = [f for f in papers_author if f.citation_count is not None]
+        papers_author = sorted(papers_author, key=lambda x: x.citation_count, reverse=True)
+        papers_author = [vars(f) for f in papers_author]
+
+
+
+
+        hindex = author.hindex
+        cit_cnt = author.citations
+        p_cnt = author.paper_count
+        home = author.homepage
+        name = author.name
+
+
+        SEMSCHTREE.write_cache()
+        self.write_cache()
+
+        return (name, home, p_cnt, cit_cnt, hindex, worked_with_authors, papers_author)
+        
+
+
+
+
+
+    
 

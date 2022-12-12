@@ -1,4 +1,5 @@
 import numpy
+from typing import List
 
 def lev_dist(token1, token2):
     distances = numpy.zeros((len(token1) + 1, len(token2) + 1))
@@ -30,3 +31,21 @@ def lev_dist(token1, token2):
                     distances[t1][t2] = c + 1
 
     return distances[len(token1)][len(token2)]
+
+def arxiv_author_match(query_author: str, author_list: List[str]):
+    for auth in author_list:
+        if lev_dist(query_author, auth) < 3:
+            return True
+    return False
+
+def arxiv_abstract_match(query_abstract, target_abstract):
+    list_query = query_abstract.split(" ")
+    list_target = target_abstract.split(" ")
+    list_query = [f.lower() for f in list_query]
+    list_target = [f.lower() for f in list_target]
+
+    list_inter = list(set(list_query) & set(list_target))
+    if bool(list_inter):
+        return True
+    else:
+        return False
