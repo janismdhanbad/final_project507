@@ -57,7 +57,14 @@ table{
 	width: 70%;
 }
 
-th, td {
+th {
+	border: 1px solid beige;
+	background-color: rgba(228, 109, 18, 0.993);
+	padding: 10px;
+	text-align: center;
+  }
+  
+td {
 	border: 1px solid beige;
 	background-color: rgba(228, 190, 161, 0.993);
 	padding: 10px;
