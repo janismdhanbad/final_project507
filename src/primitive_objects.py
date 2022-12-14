@@ -79,14 +79,19 @@ class ArxivPaper(Paper):
         cache_file=None,
     ):
         super().__init__(id, arxiv_id, title, authors, abstract, category, cache_file)
-        self.update_semsch_id()
+        
 
     def update_semsch_id(self):
         arxiv_id = self.arxiv_id
         arxiv_id = arxiv_id.replace("abs/", "").split("v")[0]
         url = f"{SEMSCH_LINK}/paper/arXiv:{arxiv_id}"
         res = requests.get(url, headers={"x-api-key": SemanticScholarCreds.API_KEY})
-        self.id = res.json()["paperId"]
+        response = res.json()
+        if response.get("paperId"):
+            self.id = res.json()["paperId"]
+        else:
+            self.id = None
+            self.title = self.title + " (Unfortunately, this paper is not available on semantic scholar so you can't explore it further) :/ "
 
 
 class ArxivID:

@@ -517,6 +517,7 @@ class ArxivTree:
             }
             # Update the cache of arxiv papers
             paper = ArxivPaper(**paper_details)
+            paper.update_semsch_id()
             self.local_paper_list.append(paper)
             self.update_paper_list(paper)
 
