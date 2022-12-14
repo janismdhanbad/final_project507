@@ -9,7 +9,34 @@ body{
 	font-size:150%;
 	background-color:beige;
 }
-
+#myTable_filter{
+	margin-right: 15%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	display: inline-block;
+	width: 50%;
+}
+#myTable_filter label{
+	border-radius: 10px;
+	width: 90%;
+}
+#myTable_filter input{
+	border-radius: 10px;
+	width: 80%;
+}
+#myTable_info{
+	margin-left: 10%;
+	margin-bottom: 20px;
+}
+#myTable_paginate{
+	margin-right: 10%;
+	margin-bottom: 20px;
+}
+#myTable_length{
+	margin-left: 5%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
 /*Make the h1 heading bigger with a bold font*/
 h1{
 	font-size: 2em; 
@@ -55,17 +82,18 @@ table{
 	border: 1px solid black;
 	margin: 20px auto;
 	width: 70%;
+	border-radius: 5px;
 }
 
 th {
-	border: 1px solid beige;
+	border: 1px solid black;
 	background-color: rgba(228, 109, 18, 0.993);
 	padding: 10px;
 	text-align: center;
   }
   
 td {
-	border: 1px solid beige;
+	border: 1px solid brown;
 	background-color: rgba(228, 190, 161, 0.993);
 	padding: 10px;
 	text-align: center;
