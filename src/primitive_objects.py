@@ -1,3 +1,9 @@
+import requests
+from data.secret_key import SemanticScholarCreds
+
+SEMSCH_LINK = "https://api.semanticscholar.org/graph/v1"
+
+
 class Authors:
     def __init__(
         self,
@@ -59,6 +65,28 @@ class Paper:
             self.abstract = cache_file["abstract"]
             self.category = cache_file["category"]
             self.arxiv_id = cache_file["arxiv_id"]
+
+
+class ArxivPaper(Paper):
+    def __init__(
+        self,
+        id=None,
+        arxiv_id=None,
+        title=None,
+        authors=None,
+        abstract=None,
+        category=None,
+        cache_file=None,
+    ):
+        super().__init__(id, arxiv_id, title, authors, abstract, category, cache_file)
+        self.update_semsch_id()
+
+    def update_semsch_id(self):
+        arxiv_id = self.arxiv_id
+        arxiv_id = arxiv_id.replace("abs/", "").split("v")[0]
+        url = f"{SEMSCH_LINK}/paper/arXiv:{arxiv_id}"
+        res = requests.get(url, headers={"x-api-key": SemanticScholarCreds.API_KEY})
+        self.id = res.json()["paperId"]
 
 
 class ArxivID:
@@ -129,17 +157,3 @@ class TwitterData:
         self.retweet_count = retweet_count
         self.reply_count = reply_count
         self.quote_count = quote_count
-
-
-class ArxivPaper(Paper):
-    def __init__(
-        self,
-        id=None,
-        arxiv_id=None,
-        title=None,
-        authors=None,
-        abstract=None,
-        category=None,
-        cache_file=None,
-    ):
-        super().__init__(id, arxiv_id, title, authors, abstract, category, cache_file)

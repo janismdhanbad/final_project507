@@ -4,7 +4,6 @@ import pandas as pd
 from flask import Flask, render_template, request
 
 from generate_object_tree import ArxivTree, AuthorTree, SemSchTree
-from primitive_objects import ArxivID
 
 CACHE_ARXIV = "../data/papers_arxiv_v1.json"
 CACHE_SEMSCH = "../data/papers_semsch_v1.json"
@@ -25,7 +24,7 @@ def index():
 
 @app.route("/papers", methods=["GET", "POST"])
 def paper_display():
-    """The function displays the paper results after the first user input using 
+    """The function displays the paper results after the first user input using
     HTML form
 
     Returns
@@ -33,7 +32,7 @@ def paper_display():
     HTML
         A renderable HTML that is shown to the user
     """
-    #Extracting user inputs 
+    # Extracting user inputs
     paper_title = request.form["paper_title"]
     author_name = request.form["author_name"]
     keyword = request.form["keyword"]
@@ -43,7 +42,7 @@ def paper_display():
         use_cache = True
     else:
         use_cache = False
-    #Retreiving paper data based on user inputs
+    # Retreiving paper data based on user inputs
     paper_results = ARXIVTREE.gather_data(
         paper_title=paper_title,
         author=author_name,
@@ -56,7 +55,7 @@ def paper_display():
 @app.route("/papers/paper_explore", methods=["GET", "POST"])
 def explore_paper():
     """The function reeturns an HTML page that shows all the details about the
-    paper, i.e., its authors, its references and its citations. Note that the 
+    paper, i.e., its authors, its references and its citations. Note that the
     paper_id here is the Arxiv paper ID and NOT the semantic scholar paper ID
 
     Returns
@@ -67,8 +66,7 @@ def explore_paper():
     if request.form.get("paper_id"):
         # Extracting Arxiv paper ID
         arxiv_id_paper = request.form["paper_id"]
-        arxiv_id_paper = arxiv_id_paper.replace("abs/", "").split("v")[0]
-        ar_id = ArxivID(arxiv_id_paper)
+        semsch_id = ARXIVTREE.papers_dict[arxiv_id_paper].id
         (
             title,
             authors,
@@ -79,7 +77,7 @@ def explore_paper():
             url,
             reference_list,
             citation_list,
-        ) = SEMSCHTREE.fetch_paper_data(ar_id)
+        ) = SEMSCHTREE.fetch_paper_data(semsch_id)
         return render_template(
             "paper_explore.html",
             title=title,
@@ -97,7 +95,7 @@ def explore_paper():
 @app.route("/papers/paper_explore_sch", methods=["GET", "POST"])
 def explore_paper_sch():
     """The function reeturns an HTML page that shows all the details about the
-    paper, i.e., its authors, its references and its citations. Note that the 
+    paper, i.e., its authors, its references and its citations. Note that the
     paper_id here is the semantic scholar paper ID and NOT the Arxiv paper ID
 
     Returns
@@ -134,7 +132,7 @@ def explore_paper_sch():
 
 @app.route("/papers/author_explore", methods=["GET", "POST"])
 def explore_author_sch():
-    """The fuunction returns a renderable HTML for the author ID selected by the 
+    """The fuunction returns a renderable HTML for the author ID selected by the
     user. The details here consist of Author's papers and other authors that the
     author has worked with.
 
@@ -184,11 +182,11 @@ def prev_papers_explored():
 
 @app.route("/paper_corpus", methods=["GET", "POST"])
 def paper_corpus_explored():
-    """The function returns a renderable HTML that contains papers in the 
-    corpus(cached file). Note that it might be possible that a paper is present 
-    in the corpus(cache file) and still takes time to load. This is because 
+    """The function returns a renderable HTML that contains papers in the
+    corpus(cached file). Note that it might be possible that a paper is present
+    in the corpus(cache file) and still takes time to load. This is because
     we need to request the sematic scholar API for the details about a paper's
-    authors, references and citations. 
+    authors, references and citations.
 
     Returns
     -------
@@ -216,11 +214,11 @@ def paper_corpus_explored():
 
 @app.route("/author_corpus", methods=["GET", "POST"])
 def author_corpus_explored():
-    """The function returns a renderable HTML that contains papers in the 
-    corpus(cached file). Note that it might be possible that an author is present 
-    in the corpus(cache file) and still takes time to load. This is because 
+    """The function returns a renderable HTML that contains papers in the
+    corpus(cached file). Note that it might be possible that an author is present
+    in the corpus(cache file) and still takes time to load. This is because
     we need to request the sematic scholar API for the details about a author's
-    papers and the other authors who worked with the author. 
+    papers and the other authors who worked with the author.
 
     Returns
     -------
