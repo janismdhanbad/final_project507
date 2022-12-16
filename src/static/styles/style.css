@@ -359,7 +359,7 @@ input[type="text"]
 	border-radius: 20px;
 }
 .submit_button{
-	grid-row: 4/ span 1;
+	grid-row: 6/ span 1;
 	grid-column: 1 / -1;
 	text-align: center;
 }
@@ -379,9 +379,33 @@ input[type="text"]
 	font-size: 20px;
 }
 .use_cache{
-	grid-row: 5/ span 1;
+	grid-row: 7/ span 1;
 	grid-column: 1 / -1;
 	text-align: center;
+
+}
+.primary_cat_key_input{
+	grid-row: 5/ span 1;
+	grid-column: 1 / span 1;
+	text-align: center;
+}
+.primary_cat_key_label{
+	text-align: center;
+	padding-bottom: 5px;
+
+}
+.secondary_cat_key_input{
+	grid-row: 5/ span 1;
+	grid-column: 3 / span 1;
+	text-align: center;
+}
+select{
+	border-radius: 20px;
+	height: 30px;
+}
+.secondary_cat_key_label{
+	text-align: center;
+	padding-bottom: 5px;
 
 }
 .paper_link{

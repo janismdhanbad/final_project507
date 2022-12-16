@@ -1,4 +1,5 @@
 import requests
+from typing import List, Dict
 from data.secret_key import SemanticScholarCreds
 
 SEMSCH_LINK = "https://api.semanticscholar.org/graph/v1"
@@ -7,7 +8,7 @@ SEMSCH_LINK = "https://api.semanticscholar.org/graph/v1"
 class Authors:
     def __init__(
         self,
-        id=None,
+        id: str=None,
         name=None,
         homepage=None,
         paper_count=None,
@@ -42,13 +43,14 @@ class Authors:
 class Paper:
     def __init__(
         self,
-        id=None,
-        arxiv_id=None,
-        title=None,
-        authors=None,
-        abstract=None,
-        category=None,
-        cache_file=None,
+        id: str=None,
+        arxiv_id: str=None,
+        title: str=None,
+        authors: List[str]=None,
+        abstract: str=None,
+        primary_category: str=None,
+        secondary_category: str=None,
+        cache_file: Dict=None,
     ):
         if cache_file is None:
 
@@ -57,28 +59,31 @@ class Paper:
             self.authors = authors
             self.abstract = abstract
             self.arxiv_id = arxiv_id
-            self.category = category
+            self.primary_category = primary_category
+            self.secondary_category = secondary_category
         else:
             self.id = cache_file["id"]
             self.title = cache_file["title"]
             self.authors = cache_file["authors"]
             self.abstract = cache_file["abstract"]
-            self.category = cache_file["category"]
+            self.primary_category = cache_file["primary_category"]
+            self.secondary_category = cache_file["secondary_category"]
             self.arxiv_id = cache_file["arxiv_id"]
 
 
 class ArxivPaper(Paper):
     def __init__(
         self,
-        id=None,
-        arxiv_id=None,
-        title=None,
-        authors=None,
-        abstract=None,
-        category=None,
-        cache_file=None,
+        id: str=None,
+        arxiv_id: str=None,
+        title: str=None,
+        authors: List[str]=None,
+        abstract: str=None,
+        primary_category: str=None,
+        secondary_category: str=None,
+        cache_file: Dict=None,
     ):
-        super().__init__(id, arxiv_id, title, authors, abstract, category, cache_file)
+        super().__init__(id, arxiv_id, title, authors, abstract, primary_category,secondary_category, cache_file)
         
 
     def update_semsch_id(self):
@@ -102,23 +107,24 @@ class ArxivID:
 class SemSchPaper(Paper):
     def __init__(
         self,
-        id=None,
-        arxiv_id=None,
-        title=None,
-        authors=None,
-        abstract=None,
-        category=None,
-        year=None,
-        reference_count=None,
-        citation_count=None,
-        influential_paper_citations=None,
-        is_open_access=None,
-        citations=None,
-        references=None,
-        url=None,
-        cache_file=None,
+        id: str=None,
+        arxiv_id: str=None,
+        title: str=None,
+        authors: List[str]=None,
+        abstract: str=None,
+        primary_category: str=None,
+        secondary_category: str=None,
+        year: str=None,
+        reference_count: str=None,
+        citation_count: str=None,
+        influential_paper_citations: str=None,
+        is_open_access: bool=None,
+        citations: List[str]=None,
+        references: List[str] =None,
+        url: str=None,
+        cache_file: Dict=None,
     ):
-        super().__init__(id, arxiv_id, title, authors, abstract, category, cache_file)
+        super().__init__(id, arxiv_id, title, authors, abstract, primary_category,secondary_category, cache_file)
 
         if cache_file is None:
 

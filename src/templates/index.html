@@ -49,6 +49,50 @@
                         <input type="text" id="keyword" name="keyword" placeholder="e.g.Transformers" >
                     </div>
                 </div>
+                <div class="primary_cat_key">
+                    <div class="primary_cat_key_label">
+                        <label for="primary_cat">Primary category:</label>
+                    </div>
+                    <div class="primary_cat_key_input">
+                        <select name="primary_cat" id="primary_cat">
+                            <option value="">None</option>  
+                            <option value="cs">Computer Science</option>
+                              <option value="eess">Electrical Engineering and Systems Science</option>
+                              <option value="econ">Economics</option>
+                              <option value="math">Mathematics</option>
+                          </select>
+                    </div>
+                </div>
+                <div class="secondary_cat_key">
+                    <div class="secondary_cat_key_label">
+                        <label for="secondary_cat">Secondary category:</label>
+                    </div>
+                    <div class="secondary_cat_key_input">
+                        <select name="secondary_cat" id="secondary_cat">
+                            <option value="">None</option>
+                            <optgroup label="Computer Science">
+                              <option value="AI">Artificial Intelligence</option>
+                              <option value="AR">Hardware Architecture</option>
+                              <option value="CC">Computational Complexity</option>
+                              <option value="CE">Computational Engineering, Finance, and Science</option>
+                              <option value="CG">Computational Geometry</option>
+                            </optgroup>
+                            <optgroup label="Electrical Engineering and Systems Science">
+                                <option value="AS">Audio and Speech Processing</option>
+                                <option value="IV">Image and Video Processing</option>
+                                <option value="SP">Signal Processing</option>
+                                <option value="SY">Systems and Control</option>
+                            </optgroup>
+
+                            <optgroup label="Economics">
+                                <option value="EM">Econometrics</option>
+                                <option value="GN">General Economics</option>
+                                <option value="TH">Theoretical Economics</option>
+                                
+                              </optgroup>
+                          </select>
+                    </div>
+                </div>
                 <div class="submit_button">
                     <input type="submit"  value="Search">
                 </div>

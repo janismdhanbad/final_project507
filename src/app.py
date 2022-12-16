@@ -36,7 +36,9 @@ def paper_display():
     paper_title = request.form["paper_title"]
     author_name = request.form["author_name"]
     keyword = request.form["keyword"]
-
+    primary_cat = request.form["primary_cat"]
+    secondary_cat = request.form["secondary_cat"]
+    # import pdb; pdb.set_trace()
     # Checking if the user checked using cache
     if request.form.get("use_cache"):
         use_cache = True
@@ -48,6 +50,8 @@ def paper_display():
         author=author_name,
         abstract=keyword,
         use_cache=use_cache,
+        primary_category=primary_cat,
+        secondary_category =secondary_cat
     )
     return render_template("papers.html", paper_results=paper_results)
 
@@ -67,6 +71,9 @@ def explore_paper():
         # Extracting Arxiv paper ID
         arxiv_id_paper = request.form["paper_id"]
         semsch_id = ARXIVTREE.papers_dict[arxiv_id_paper].id
+        # primary_category = ARXIVTREE.papers_dict[arxiv_id_paper].primary_category
+        # secondary_category = ARXIVTREE.papers_dict[arxiv_id_paper].secondary_category
+
         (
             title,
             authors,

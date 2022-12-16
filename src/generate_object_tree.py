@@ -194,7 +194,7 @@ class SemSchTree:
         _initialize_dict["title"] = results["title"]
         _initialize_dict["authors"] = results["authors"]
         _initialize_dict["abstract"] = results["abstract"]
-        _initialize_dict["category"] = None
+        # _initialize_dict["category"] = None
         _initialize_dict["year"] = results["year"]
         _initialize_dict["reference_count"] = results["referenceCount"]
         _initialize_dict["citation_count"] = results["citationCount"]
@@ -398,6 +398,14 @@ class ArxivTree:
         ]
         return abstract_all
 
+    def get_primary_category(self) -> List[List[str]]:
+        all_primary = [[i, f.primary_category] for i, f in enumerate(self.papers_dict.values())]
+        return all_primary
+    
+    def get_secondary_category(self) -> List[List[str]]:
+        all_secondary = [[i, f.secondary_category] for i, f in enumerate(self.papers_dict.values())]
+        return all_secondary
+
     def update_paper_list(self, paper: ArxivPaper) -> None:
         """The function updates the cache list self.papers by appending the
         result from the API request into the list
@@ -505,6 +513,13 @@ class ArxivTree:
             paper_abstract = paper.find("n:summary", namespaces=NAMESPACE).text.replace(
                 "http://arxiv.org/", ""
             )
+            categories = paper.findall("n:category", namespaces=NAMESPACE)
+            categories = [f.get("term") for f in categories]
+            categories = [f.split(".") for f in categories if ((f is not None) and f.split(".")[0] in ["cs", "math", "econ", "math"] )]
+            primary_cats = [f[0] for f in categories]
+
+            # import pdb; pdb.set_trace()
+            secondary_cats = [f[1] for f in categories]
             paper_abstract = paper_abstract.replace("\n", " ").lstrip().rstrip()
             paper_author_list = []
             for au in all_authors:
@@ -514,6 +529,8 @@ class ArxivTree:
                 "authors": paper_author_list,
                 "title": temp_tile,
                 "abstract": paper_abstract,
+                "primary_category": primary_cats,
+                "secondary_category": secondary_cats
             }
             # Update the cache of arxiv papers
             paper = ArxivPaper(**paper_details)
@@ -522,7 +539,8 @@ class ArxivTree:
             self.update_paper_list(paper)
 
     def gather_data(
-        self, paper_title=None, author=None, abstract=None, use_cache=False
+        self, paper_title=None, author=None, abstract=None, use_cache=False, 
+        primary_category = None, secondary_category=None
     ) -> List[Dict]:
         """The function that controls the construction of Arxiv papers tree. Note
         that this is not technically a tree but a List. We use this list as
@@ -552,44 +570,68 @@ class ArxivTree:
             author = None
         if abstract == "":
             abstract = None
+        if primary_category == "":
+            primary_category = None
+        if secondary_category == "":
+            secondary_category = None
 
-        # Extracting cached Titles, authors, and abstracts
-        paper_list = self.get_paper_titles()
-        author_list = self.get_paper_authors()
-        abstract_list = self.get_paper_abstracts()
+        if ((primary_category is None) and (secondary_category is None)):
 
-        if paper_title is not None:
-            paper_ids_title = [
-                f[0] for f in paper_list if utils.lev_dist(f[1], paper_title) < 30
-            ]
+
+            # Extracting cached Titles, authors, and abstracts
+            paper_list = self.get_paper_titles()
+            author_list = self.get_paper_authors()
+            abstract_list = self.get_paper_abstracts()
+
+            if paper_title is not None:
+                paper_ids_title = [
+                    f[0] for f in paper_list if utils.lev_dist(f[1], paper_title) < 30
+                ]
+            else:
+                paper_ids_title = []
+            if author is not None:
+                paper_ids_author = [
+                    f[0] for f in author_list if utils.arxiv_author_match(author, f[1])
+                ]
+            else:
+                paper_ids_author = []
+            if abstract is not None:
+                paper_ids_abstract = [
+                    f[0]
+                    for f in abstract_list
+                    if utils.arxiv_abstract_match(f[1], abstract)
+                ]
+            else:
+                paper_ids_abstract = []
+            paper_ids = paper_ids_title + paper_ids_author + paper_ids_abstract
+            # if the use_cache is True, then use the existung paper titles, abstract,
+            # and authors
+            if bool(paper_ids) and use_cache == True:
+                candidate_papers = [vars(f) for f in self.papers_dict.values()]
+                papers_data = np.array(candidate_papers)[paper_ids].tolist()
+            else:
+                self.request_arxiv_api_and_update(paper_title, author, abstract)
+                self.write_cache()
+                papers_data = [vars(f) for f in self.local_paper_list]
         else:
-            paper_ids_title = []
-        if author is not None:
-            paper_ids_author = [
-                f[0] for f in author_list if utils.arxiv_author_match(author, f[1])
-            ]
-        else:
-            paper_ids_author = []
-        if abstract is not None:
-            paper_ids_abstract = [
-                f[0]
-                for f in abstract_list
-                if utils.arxiv_abstract_match(f[1], abstract)
-            ]
-        else:
-            paper_ids_abstract = []
-        paper_ids = paper_ids_title + paper_ids_author + paper_ids_abstract
-        # if the use_cache is True, then use the existung paper titles, abstract,
-        # and authors
-        # import pdb; pdb.set_trace()
-        if bool(paper_ids) and use_cache == True:
+            
             candidate_papers = [vars(f) for f in self.papers_dict.values()]
-            papers_data = np.array(candidate_papers)[paper_ids].tolist()
-        else:
-            self.request_arxiv_api_and_update(paper_title, author, abstract)
-            self.write_cache()
-            papers_data = [vars(f) for f in self.local_paper_list]
+            
+            primary_category_list = self.get_primary_category()
+            secondary_category_list = self.get_secondary_category()
 
+            if primary_category is not None:
+                paperd_ids_primary = [f[0] for f in primary_category_list if primary_category in f[1]]
+            else:
+                paperd_ids_primary = []
+            
+            if secondary_category is not None:
+                paperd_ids_secondary = [f[0] for f in secondary_category_list if secondary_category in f[1]]
+            else:
+                paperd_ids_secondary = []
+            paper_ids = paperd_ids_secondary + paperd_ids_primary
+            paper_ids = list(set(paper_ids))
+            papers_data = np.array(candidate_papers)[paper_ids].tolist()            
         return papers_data
 
 
